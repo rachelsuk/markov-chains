@@ -9,10 +9,9 @@ def open_and_read_file(file_path):
     Takes a string that is a file path, opens the file, and turns
     the file's contents as one string of text.
     """
+    contents = open(file_path).read()
 
-    # your code goes here
-
-    return 'Contents of your file as one long string'
+    return contents
 
 
 def make_chains(text_string):
@@ -42,8 +41,16 @@ def make_chains(text_string):
 
     chains = {}
 
-    # your code goes here
+    words = text_string.split()
 
+    for i in range(len(words) - 2):
+        two_words = (words[i], words[i + 1])
+
+        if two_words in chains: 
+            chains[two_words].append(words[i + 2])
+        else:
+            chains[two_words] = [words[i + 2]]
+  
     return chains
 
 
@@ -52,12 +59,24 @@ def make_text(chains):
 
     words = []
 
-    # your code goes here
+    bi_gram, next_words = choice(list(chains.items()))
+
+    for gram in bi_gram:
+        words.append(gram)
+
+    words.append(choice(next_words))
+
+    while True: 
+        if (words[-2], words[-1]) in chains:
+            next_combo = chains[(words[-2], words[-1])]
+            words.append(choice(next_combo))
+        else:
+            break
 
     return ' '.join(words)
 
 
-input_path = 'green-eggs.txt'
+input_path = 'gettysburg.txt'
 
 # Open the file and turn it into one long string
 input_text = open_and_read_file(input_path)
