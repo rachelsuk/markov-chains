@@ -81,7 +81,9 @@ def make_text(chains, n):
         n_gram = []
         for i in range(n):
             n_gram.append(words[-(i+1)])
-        if tuple(n_gram[::-1]) in chains:
+        if tuple(n_gram[::-1]) in chains and tuple(n_gram[::-1])[-1][-1] in ['.','!','?']:
+            break
+        elif tuple(n_gram[::-1]) in chains:
             next_combo = chains[tuple(n_gram[::-1])]
             words.append(choice(next_combo))
         else:
