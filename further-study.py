@@ -16,7 +16,7 @@ def open_and_read_file(file_path):
     return contents
 
 
-def make_chains(text_string):
+def make_chains(text_string, n):
     """Take input text as string; return dictionary of Markov chains.
 
     A chain will be a key that consists of a tuple of (word1, word2)
@@ -45,32 +45,40 @@ def make_chains(text_string):
 
     words = text_string.split()
 
-    for i in range(len(words) - 2):
-        two_words = (words[i], words[i + 1])
-
-        if two_words in chains: 
-            chains[two_words].append(words[i + 2])
+    for i in range(len(words) - n):
+        n_gram = []
+        for num in range(i,i+n): 
+            n_gram.append(words[num])
+        
+        n_gram = tuple(n_gram)  
+        
+        if n_gram in chains: 
+            chains[n_gram].append(words[i + n])
         else:
-            chains[two_words] = [words[i + 2]]
-  
+            chains[n_gram] = [words[i + n]]
+
     return chains
 
 
-def make_text(chains):
+def make_text(chains, n):
     """Return text from chains."""
 
     words = []
 
-    bi_gram, next_words = choice(list(chains.items()))
+    n_gram, next_words = choice(list(chains.items()))
 
-    for gram in bi_gram:
+    for gram in n_gram:
         words.append(gram)
 
     words.append(choice(next_words))
+    print(words)
 
-    while True: 
-        if (words[-2], words[-1]) in chains:
-            next_combo = chains[(words[-2], words[-1])]
+    while True:
+        n_gram = []
+        for i in range(n):
+            n_gram.append(words[-(i+1)])
+        if tuple(n_gram[::-1]) in chains:
+            next_combo = chains[tuple(n_gram[::-1])]
             words.append(choice(next_combo))
         else:
             break
@@ -84,10 +92,10 @@ input_path = sys.argv[1]
 input_text = open_and_read_file(input_path)
 
 # Get a Markov chain
-chains = make_chains(input_text)
+chains = make_chains(input_text, 4)
 
 # Produce random text
-random_text = make_text(chains)
+random_text = make_text(chains, 4)
 
 print(random_text)
 
