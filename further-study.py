@@ -65,13 +65,17 @@ def make_text(chains, n):
 
     words = []
 
-    n_gram, next_words = choice(list(chains.items()))
+    while True:
+        n_gram, next_words = choice(list(chains.items()))
+        if n_gram[0][0].isupper():
+            break
+        else:
+            continue
 
     for gram in n_gram:
         words.append(gram)
 
     words.append(choice(next_words))
-    print(words)
 
     while True:
         n_gram = []
@@ -86,15 +90,18 @@ def make_text(chains, n):
     return ' '.join(words)
 
 
-input_path = sys.argv[1]
+input_path_1 = sys.argv[1]
+input_path_2 = sys.argv[2]
 
 # Open the file and turn it into one long string
-input_text = open_and_read_file(input_path)
+input_text_1 = open_and_read_file(input_path_1)
+input_text_2 = open_and_read_file(input_path_2)
+input_text = input_text_1 + input_text_2
 
 # Get a Markov chain
 chains = make_chains(input_text, 4)
 
-# Produce random text
+# # Produce random text
 random_text = make_text(chains, 4)
 
 print(random_text)
